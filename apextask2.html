@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intermediate HTML, CSS & JS</title>
+  <style>
+    body{font-family:sans-serif;margin:0;padding:20px;background:#f5f5f5;color:#333}
+    header{background:#22c55e;color:#fff;padding:10px;text-align:center}
+    main{display:grid;gap:20px;grid-template-columns:1fr 1fr;max-width:1000px;margin:20px auto}
+    section{background:#fff;padding:15px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+    input,textarea,select{width:100%;padding:8px;margin:5px 0;border:1px solid #ccc;border-radius:6px}
+    button{padding:6px 12px;margin-top:6px;border:0;border-radius:6px;cursor:pointer}
+    .todo-item{display:flex;justify-content:space-between;align-items:center;padding:6px;border:1px solid #ddd;border-radius:6px;margin-top:6px}
+    .completed{text-decoration:line-through;opacity:.6}
+    .error{color:red;font-size:.85rem}
+    @media(max-width:768px){main{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header><h1>Apex Planet — Web Dev Practice</h1></header>
+
+<main>
+  <!-- To-Do List -->
+  <section>
+    <h2>To-Do List</h2>
+    <input id="todo-input" placeholder="Add a task...">
+    <button onclick="addTodo()">Add</button>
+    <ul id="todo-list"></ul>
+  </section>
+
+  <!-- Contact Form -->
+  <section>
+    <h2>Contact Form</h2>
+    <form id="contact-form" novalidate>
+      <input id="name" placeholder="Full Name *">
+      <span id="err-name" class="error"></span>
+      <input id="email" placeholder="Email *">
+      <span id="err-email" class="error"></span>
+      <textarea id="message" placeholder="Message *"></textarea>
+      <span id="err-msg" class="error"></span><br>
+      <label><input type="checkbox" id="consent"> I agree *</label>
+      <span id="err-consent" class="error"></span><br>
+      <button type="submit">Send</button>
+    </form>
+    <p id="success"></p>
+  </section>
+</main>
+
+<script>
+/* To-Do */
+let todos=[];const list=document.getElementById('todo-list');
+function render(){list.innerHTML='';todos.forEach((t,i)=>{list.innerHTML+=
+ `<li class="todo-item ${t.done?'completed':''}" onclick="toggle(${i})">${t.text}
+   <button onclick="del(${i});event.stopPropagation()">X</button></li>`})}
+function addTodo(){const inp=document.getElementById('todo-input');if(inp.value){todos.push({text:inp.value,done:false});inp.value='';render()}}
+function toggle(i){todos[i].done=!todos[i].done;render()}
+function del(i){todos.splice(i,1);render()}
+
+/* Contact Form Validation */
+const f=document.getElementById('contact-form');
+f.addEventListener('submit',e=>{
+  e.preventDefault();let ok=true;
+  const name=document.getElementById('name').value.trim();
+  const email=document.getElementById('email').value.trim();
+  const msg=document.getElementById('message').value.trim();
+  const consent=document.getElementById('consent').checked;
+  document.getElementById('err-name').textContent=name?'':'Name required';
+  document.getElementById('err-email').textContent=email&&/^[^@]+@[^@]+\.[^@]+$/.test(email)?'':'Valid email required';
+  document.getElementById('err-msg').textContent=msg?'':'Message required';
+  document.getElementById('err-consent').textContent=consent?'':'Consent required';
+  ok=name&&email&&/^[^@]+@[^@]+\.[^@]+$/.test(email)&&msg&&consent;
+  if(ok){document.getElementById('success').textContent="Form submitted successfully!";f.reset();}
+});
+</script>
+</body>
+</html>
